@@ -1,0 +1,12 @@
+GITHUB_SECTION = "Github"
+SLACK_SECTION = "Slack"
+SAVE_SECTION = "Save"
+LOGGER_SECTION = "Logger"
+USERS_SECTION = "Users"
+
+TOKEN_KEY = "Token"
+ORG_KEY = "Organisation"
+REPOSITORIES_KEY = "Repositories"
+REPOSITORIES_SPLIT_TOKEN = ","
+CHANNEL_KEY = "Channel"
+FILE_PATH_KEY = "FilePath"
