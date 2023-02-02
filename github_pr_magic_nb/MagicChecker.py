@@ -5,7 +5,7 @@ def is_magic_value(value):
         # Do not process non-active repositories
         return False
     value_str = str(value)
-    if re.fullmatch(r"\d0+", str(value)):
+    if re.fullmatch(r"\d0+", value_str):
         return True
     for i in range(len(value_str) - 1):
         if value_str[i] != value_str[i + 1]:
