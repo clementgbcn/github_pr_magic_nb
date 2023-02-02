@@ -89,7 +89,10 @@ class PRChecker:
                 prefix = "<@{}>".format(self.users[pr_with_magic_nb.user.login])
             else:
                 prefix = "<{}|{}>".format(
-                    pr_with_magic_nb.user.html_url, pr_with_magic_nb.user.name
+                    pr_with_magic_nb.user.html_url,
+                    pr_with_magic_nb.user.name
+                    if pr_with_magic_nb.user.name
+                    else pr_with_magic_nb.user.login,
                 )
             message = ":tada: {} opened in repository {} the PR <{}|#{} {}>".format(
                 prefix,
