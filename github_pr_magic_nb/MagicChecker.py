@@ -1,5 +1,9 @@
 def is_magic_value(value):
-    if value % 1000 == 0:
+    if value < 100:
+        # Do not process non-active repositories
+        return False
+    divider = 1000 if value < 100000 else 10000
+    if value % divider == 0:
         return True
     value_str = str(value)
     for i in range(len(value_str) - 1):
