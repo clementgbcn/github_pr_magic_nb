@@ -9,6 +9,8 @@ from github_pr_magic_nb.PRChecker import PRChecker
 if __name__ == "__main__":
     # Load config
     configParser = configparser.ConfigParser()
+    # Preserve case
+    configParser.optionxform = lambda option: option
     configParser.read("config.ini")
 
     # Setup logger
