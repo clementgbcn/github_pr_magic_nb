@@ -116,7 +116,7 @@ class PRChecker:
                 last_pr_to_check, current_value + LOW_THRESHOLD
             )
         if res:
-            message = ":{}: Repository {} current PR number {} is closed to a magic number: {} (less than {})".format(
+            message = ":{}: Repository {} current PR number {} is close to a magic number: {} (less than {})".format(
                 "so_close" if is_high else "warning",
                 repo.name,
                 current_value,
