@@ -1,11 +1,12 @@
+import re
+
 def is_magic_value(value):
     if value < 100:
         # Do not process non-active repositories
         return False
-    divider = 1000 if value < 100000 else 10000
-    if value % divider == 0:
-        return True
     value_str = str(value)
+    if re.fullmatch(r"\d0+", value_str):
+        return True
     for i in range(len(value_str) - 1):
         if value_str[i] != value_str[i + 1]:
             return False
