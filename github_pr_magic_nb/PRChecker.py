@@ -15,7 +15,7 @@ from github_pr_magic_nb.ConfigConstants import (
     SAVE_SECTION,
     USERS_SECTION,
 )
-from github_pr_magic_nb.MagicChecker import check_magic_value_range
+from github_pr_magic_nb.MagicChecker import Rarity
 from github_pr_magic_nb.Repository import Repository
 from github_pr_magic_nb.SlackBot import SlackBot
 
@@ -82,9 +82,9 @@ class PRChecker:
                     current_value,
                 )
             )
-        res = check_magic_value_range(last_pr_to_check, current_value + 1)
-        for pr in res:
-            pr_with_magic_nb = self.github.get_repo(repo.get_url()).get_pull(pr)
+        res = Rarity.check_rarity_value_range(last_pr_to_check, current_value + 1)
+        for pr_number, pr_rarity in res.items():
+            pr_with_magic_nb = self.github.get_repo(repo.get_url()).get_pull(pr_number)
             if pr_with_magic_nb.user.login in self.users:
                 prefix = "<@{}>".format(self.users[pr_with_magic_nb.user.login])
             else:
@@ -94,11 +94,12 @@ class PRChecker:
                     if pr_with_magic_nb.user.name
                     else pr_with_magic_nb.user.login,
                 )
-            message = ":tada: {} opened in repository {} the PR <{}|#{} {}>".format(
+            message = "{}\n:tada: {} opened in repository {} the PR <{}|#{} {}>".format(
+                pr_rarity.get_str_repr(),
                 prefix,
                 repo.name,
                 pr_with_magic_nb.html_url,
-                pr,
+                pr_number,
                 pr_with_magic_nb.title,
             )
             self.slack_bot.send_message(message)
@@ -106,21 +107,23 @@ class PRChecker:
     def check_next_pr(self, current_value, repo):
         # Check Next
         last_pr_to_check = max(repo.last_pr_check + HIGH_THRESHOLD, current_value)
-        res = check_magic_value_range(last_pr_to_check, current_value + HIGH_THRESHOLD)
+        next_rarity_level = Rarity.check_rarity_value_range(last_pr_to_check, current_value + HIGH_THRESHOLD)
         is_high = False
-        if res:
+        if next_rarity_level:
             is_high = True
         else:
             last_pr_to_check = max(repo.last_pr_check + LOW_THRESHOLD, current_value)
-            res = check_magic_value_range(
+            next_rarity_level = Rarity.check_rarity_value_range(
                 last_pr_to_check, current_value + LOW_THRESHOLD
             )
-        if res:
-            message = ":{}: Repository {} current PR number {} is close to a magic number: {} (less than {})".format(
-                "so_close" if is_high else "warning",
-                repo.name,
-                current_value,
-                res[0] if len(res) == 1 else res,
-                HIGH_THRESHOLD if is_high else LOW_THRESHOLD,
-            )
-            self.slack_bot.send_message(message)
+        if next_rarity_level:
+            for pr_number, pr_rarity in next_rarity_level.items():
+                message = "{}\n:{}: Repository {} current PR number {} is close to a rare number: {} (less than {})".format(
+                    pr_rarity.get_str_repr(),
+                    "so_close" if is_high else "warning",
+                    repo.name,
+                    current_value,
+                    pr_number,
+                    HIGH_THRESHOLD if is_high else LOW_THRESHOLD,
+                )
+                self.slack_bot.send_message(message)
