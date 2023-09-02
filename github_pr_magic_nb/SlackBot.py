@@ -18,4 +18,5 @@ class SlackBot:
             )
         except SlackApiError as e:
             logging.error(e)
-        logging.info(response)
+        else:
+            logging.info(response)
