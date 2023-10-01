@@ -75,7 +75,8 @@ class PRChecker:
             logger.info("Current value for {} is {}".format(repo.name, current_value))
             self.check_previous_pr(current_value, repo)
             self.check_next_pr(current_value, repo)
-            repo.last_pr_check = current_value
+            # Save the index of the next PR
+            repo.last_pr_check = current_value + 1
         self.save_run()
 
     def check_previous_pr(self, current_value, repo):
