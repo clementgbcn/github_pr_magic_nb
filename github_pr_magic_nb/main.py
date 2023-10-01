@@ -34,7 +34,11 @@ if __name__ == "__main__":
     # add file handler to logger
     logger.addHandler(file_handler)
 
-    # Launch Analysis
-    pr_checker = PRChecker(configParser)
-    pr_checker.analyse_repositories()
-    logger.info("End of Analysis\n{}\n".format("#" * 50))
+    # Check Internet connection
+    if not PRChecker.check_internet_connection():
+        logger.error("Internet connection is down. Skipping computations.")
+    else:
+        # Launch Analysis
+        pr_checker = PRChecker(configParser)
+        pr_checker.analyse_repositories()
+        logger.info("End of Analysis\n{}\n".format("#" * 50))

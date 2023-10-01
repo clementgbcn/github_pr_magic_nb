@@ -1,6 +1,7 @@
 import csv
 import logging
 import os
+import urllib
 from os import path
 
 from github import Github
@@ -42,6 +43,14 @@ class PRChecker:
         self.users = {
             user: config[USERS_SECTION][user] for user in config[USERS_SECTION]
         }
+
+    @staticmethod
+    def check_internet_connection():
+        try:
+            urllib.request.urlopen('http://www.github.com', timeout=1)
+            return True
+        except urllib.request.URLError:
+            return False
 
     def load_last_run(self):
         if not path.exists(self.save_file_path):
